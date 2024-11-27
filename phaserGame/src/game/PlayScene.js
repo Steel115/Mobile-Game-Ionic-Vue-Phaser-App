@@ -167,6 +167,25 @@ this.physics.add.overlap(this.player, this.bombs, function(object1, object2) {
     this.scene.restart();
   })
 }, null, this);
+this.physics.add.overlap(this.player, this.bombs, function(object1, object2) {
+
+  // Destroys bomb that triggered overlap
+  const bomb = (object1.key === 'player') ? object1 : object2;
+  bomb.destroy();
+
+  // Stops game object generation, pauses physics, and resets score to zero
+  createStarLoop.destroy();
+  createBombLoop.destroy();
+  this.physics.pause();
+  this.score = 0;
+
+  // stops Play Scene and starts Score Scene
+
+  this.scene.stop('PlayScene')
+  this.scene.start('ScoreScene');
+
+}, null, this);
+
 
 }
   update () {
