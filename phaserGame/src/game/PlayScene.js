@@ -177,12 +177,14 @@ this.physics.add.overlap(this.player, this.bombs, function(object1, object2) {
   createStarLoop.destroy();
   createBombLoop.destroy();
   this.physics.pause();
-  this.score = 0;
+
 
   // stops Play Scene and starts Score Scene
 
   this.scene.stop('PlayScene')
-  this.scene.start('ScoreScene');
+
+
+  this.scene.start('ScoreScene', {score: this.score});
 
 }, null, this);
 
