@@ -13,19 +13,18 @@ export class ScoreScene extends Scene {
     this.screenWidth = this.scale.width;
     this.screenHeight = this.scale.height;
     this.screenCenterX = this.screenWidth / 2;
+    
+        // calculates rank based on score
+        this.scoreRank = this.finalScore > 500 ? 'A: Prime Protocol!' : this.finalScore > 300 ? 
+        'B: Efficient Engine' : this.finalScore > 100 ? 'C: Routine Maintenance' : 'F: Gears Jammed'
 
-       
-    // calculates rank based on score
-    this.scoreRank = this.finalScore > 500 ? 'A: Prime Protocol!' : this.finalScore > 300 ? 'B: Efficient Engine' : 
-    this.finalScore > 100 ? 'C: Routine Maintenance' : 'F: Gears Jammed'
+        // adds final score text to screen
+        this.scoreText = this.add.text(this.screenCenterX, this.screenHeight / 2 - 100, 'Score: ' + 
+          this.finalScore, {fontSize: '20px', fill: 'green'}).setOrigin(0.5, 0.5);
 
-    // adds final score text to screen
-    this.scoreText = this.add.text(this.screenCenterX, this.screenHeight / 2 - 100, 'Score: ' 
-      + this.finalScore, {fontSize: '20px', fill: 'green'}).setOrigin(0.5, 0.5);
-
-    // adds score rank text to screen
-    this.rankText = this.add.text(this.screenCenterX, this.screenHeight / 2 - 50, 'Rank '
-       + this.scoreRank, {fontSize: '20px', fill: '#ffffff'}).setOrigin(0.5, 0.5)
+        // adds score rank text to screen
+        this.rankText = this.add.text(this.screenCenterX, this.screenHeight / 2 - 50, 'Rank ' + 
+          this.scoreRank, {fontSize: '20px', fill: '#ffffff'}).setOrigin(0.5, 0.5)
 
     // adds Game Over text to middle of screen
     this.gameOverText = this.add
