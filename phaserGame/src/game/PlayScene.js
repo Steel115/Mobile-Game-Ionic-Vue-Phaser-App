@@ -25,6 +25,7 @@ export class PlayScene extends Scene {
     this.gameAreaHeight = this.screenHeight - this.controlsAreaHeight;
 
     // Agrega el jugador, la plataforma y los controles.
+    // staticImage(0) es el eje de las x.
     this.platform = this.physics.add.staticImage(0, this.gameAreaHeight, 'platform').setOrigin(0, 0).refreshBody();
     this.player = this.physics.add.sprite(this.screenCenterX, this.gameAreaHeight - 24, 'player');
     this.leftArrow = this.add.image(this.screenWidth * 0.1, this.gameAreaHeight + 40, 'leftArrow').setOrigin(0, 0).setInteractive()
