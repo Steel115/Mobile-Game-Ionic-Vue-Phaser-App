@@ -31,6 +31,45 @@ export class PlayScene extends Scene {
     this.leftArrow = this.add.image(this.screenWidth * 0.1, this.gameAreaHeight + 40, 'leftArrow').setOrigin(0, 0).setInteractive()
     this.rightArrow = this.add.image(this.screenWidth * 0.7, this.gameAreaHeight + 40, 'rightArrow').setOrigin(0, 0).setInteractive()
    
+    //Salto
+    // Variable para almacenar el tiempo entre toques
+let lastTapTime = 0;
+const doubleTapThreshold = 300; // Umbral para considerar un doble toque (en milisegundos)
+
+// Flag para evitar saltos cuando no está en el suelo
+let isJumping = false;
+
+this.input.on('pointerdown', (pointer) => {
+  const currentTime = Date.now(); // Obtener el tiempo actual
+
+  // Si el tiempo entre el último toque y el actual es menor que el umbral, es un doble toque
+  if (currentTime - lastTapTime <= doubleTapThreshold && !isJumping) {
+    this.jump(); // Realiza el salto
+  }
+
+  // Actualizamos el tiempo del último toque
+  lastTapTime = currentTime;
+});
+
+// Función de salto
+this.jump = () => {
+  if (this.player.body.onFloor()) {
+    // Marca que el jugador está saltando
+    isJumping = true;
+
+    // Salto
+    this.player.setVelocityY(-200); // Velocidad negativa para saltar
+  }
+};
+
+// Detecta cuando el jugador vuelve al suelo
+this.physics.world.on('worldstep', () => {
+  if (this.player.body.onFloor() && isJumping) {
+    // Permite saltar de nuevo
+    isJumping = false;
+  }
+});
+//salto
    
   if (!this.anims.exists('left')) {
     this.anims.create({
@@ -102,11 +141,28 @@ this.stars = this.physics.add.group({
   this.bombs = this.physics.add.group({
     gravityY: 900,
   });
+  //bomba a los lados y arriba
   const createBomb = () => {
-    const x = Math.random() * this.screenWidth;
-    const bomb = this.bombs.create(x, 0, 'bomb');
-    bomb.setScale(2).refreshBody();
-  }
+    const bombType = Math.random() < 0.5 ? 'falling' : 'side'; // Decide el tipo de bomba.
+    if (bombType === 'falling') {
+      // Bomba que cae desde arriba.
+      const x = Math.random() * this.screenWidth; // Posición X aleatoria.
+      const bomb = this.bombs.create(x, 0, 'bomb'); // Crea la bomba desde arriba.
+      const scale = Phaser.Math.FloatBetween(1, 3); // Tamaño aleatorio.
+      bomb.setScale(scale).refreshBody();
+    } else {
+      // Bomba que aparece al nivel del jugador desde los lados.
+      const side = Math.random() < 0.5 ? 'left' : 'right'; // Lado de aparición.
+      const x = side === 'left' ? 0 : this.screenWidth; // Lado izquierdo o derecho.
+      const y = this.player.y; // Nivel del jugador.
+      const bomb = this.bombs.create(x, y, 'bomb'); // Crea la bomba.
+      const velocityX = side === 'left' ? 200 : -200; // Velocidad horizontal hacia el centro.
+      bomb.setVelocityX(velocityX); // Aplica la velocidad.
+      bomb.setScale(2).refreshBody(); // Tamaño fijo para bombas laterales.
+      bomb.setGravityY(0); // Sin gravedad para bombas de los lados.
+    }
+  };
+  //bombas
   const createBombLoop = this.time.addEvent({
     // Número aleatorio entre 4.5 y 5 segundos.
     delay: Math.floor(Math.random() * (5000 - 4500 + 1)) + 4500,
