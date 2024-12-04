@@ -17,7 +17,7 @@ export class PlayScene extends Scene {
     );
   }
     create () {
-        // Establece los valores del juego según el tamaño de la pantalla.
+    // Establece los valores del juego según el tamaño de la pantalla.
     this.screenWidth = this.scale.width;
     this.screenHeight = this.scale.height;
     this.screenCenterX = this.screenWidth / 2;
@@ -27,36 +27,32 @@ export class PlayScene extends Scene {
     // Agrega el jugador, la plataforma y los controles.
     // staticImage(0) es el eje de las x.
     this.platform = this.physics.add.staticImage(0, this.gameAreaHeight, 'platform').setOrigin(0, 0).refreshBody();
+    this.platform.displayWidth = this.screenWidth;
+
     this.player = this.physics.add.sprite(this.screenCenterX, this.gameAreaHeight - 24, 'player');
     this.leftArrow = this.add.image(this.screenWidth * 0.1, this.gameAreaHeight + 40, 'leftArrow').setOrigin(0, 0).setInteractive()
     this.rightArrow = this.add.image(this.screenWidth * 0.7, this.gameAreaHeight + 40, 'rightArrow').setOrigin(0, 0).setInteractive()
    
-    //Salto
-    // Variable para almacenar el tiempo entre toques
+//Salto
+// Variable para almacenar el tiempo entre toques
 let lastTapTime = 0;
 const doubleTapThreshold = 300; // Umbral para considerar un doble toque (en milisegundos)
-
-// Flag para evitar saltos cuando no está en el suelo
+// evita saltos cuando no está en el suelo
 let isJumping = false;
 
 this.input.on('pointerdown', (pointer) => {
-  const currentTime = Date.now(); // Obtener el tiempo actual
-
-  // Si el tiempo entre el último toque y el actual es menor que el umbral, es un doble toque
+  const currentTime = Date.now(); // Se obtiene el tiempo
+  // Si se hace el doble toque dentro del umbral se realiza el salto
   if (currentTime - lastTapTime <= doubleTapThreshold && !isJumping) {
-    this.jump(); // Realiza el salto
+    this.jump(); // Se realiza el salto
   }
-
-  // Actualizamos el tiempo del último toque
+  // Se actualiza el tiempo del ultimo toque
   lastTapTime = currentTime;
 });
-
-// Función de salto
 this.jump = () => {
   if (this.player.body.onFloor()) {
-    // Marca que el jugador está saltando
+    // Marca al si esta saltando
     isJumping = true;
-
     // Salto
     this.player.setVelocityY(-200); // Velocidad negativa para saltar
   }
@@ -145,21 +141,21 @@ this.stars = this.physics.add.group({
   const createBomb = () => {
     const bombType = Math.random() < 0.5 ? 'falling' : 'side'; // Decide el tipo de bomba.
     if (bombType === 'falling') {
-      // Bomba que cae desde arriba.
-      const x = Math.random() * this.screenWidth; // Posición X aleatoria.
-      const bomb = this.bombs.create(x, 0, 'bomb'); // Crea la bomba desde arriba.
-      const scale = Phaser.Math.FloatBetween(1, 3); // Tamaño aleatorio.
+      // Bomba que cae de arriba.
+      const x = Math.random() * this.screenWidth;
+      const bomb = this.bombs.create(x, 0, 'bomb'); // Crea la bomba que cae desde arriba.
+      const scale = Phaser.Math.FloatBetween(1, 3); // Tamaño de las bombas.
       bomb.setScale(scale).refreshBody();
     } else {
       // Bomba que aparece al nivel del jugador desde los lados.
-      const side = Math.random() < 0.5 ? 'left' : 'right'; // Lado de aparición.
-      const x = side === 'left' ? 0 : this.screenWidth; // Lado izquierdo o derecho.
-      const y = this.player.y; // Nivel del jugador.
-      const bomb = this.bombs.create(x, y, 'bomb'); // Crea la bomba.
+      const side = Math.random() < 0.5 ? 'left' : 'right';
+      const x = side === 'left' ? 0 : this.screenWidth;
+      const y = this.player.y; // Poicion en la que se encontra el jugador.
+      const bomb = this.bombs.create(x, y, 'bomb');
       const velocityX = side === 'left' ? 200 : -200; // Velocidad horizontal hacia el centro.
-      bomb.setVelocityX(velocityX); // Aplica la velocidad.
-      bomb.setScale(2).refreshBody(); // Tamaño fijo para bombas laterales.
-      bomb.setGravityY(0); // Sin gravedad para bombas de los lados.
+      bomb.setVelocityX(velocityX); // Se aplica la velocidad.
+      bomb.setScale(2).refreshBody();
+      bomb.setGravityY(0); // No se afecta por la gravedad.
     }
   };
   //bombas
@@ -183,7 +179,7 @@ this.stars = this.physics.add.group({
   });
 
   //Añade superposición entre el jugador y las estrellas.
-  this.score = 0;
+this.score = 0;
 this.scoreText = this.add.text(this.screenCenterX, this.gameAreaHeight + 16, 'Score: 0', { fontSize: '16px', fill: '#000' }).setOrigin(0.5, 0.5);
 
 this.physics.add.overlap(this.player, this.stars, function(object1, object2) {
